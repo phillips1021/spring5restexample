@@ -2,6 +2,8 @@ package com.wiredbrain.friends.controller;
 
 import com.wiredbrain.friends.model.Friend;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.wiredbrain.friends.service.FriendService;
 
@@ -27,9 +29,19 @@ public class FriendController {
     }
 
     @PutMapping("/friend")
-    Friend update(@RequestBody Friend friend) {
+    ResponseEntity<Friend> update(@RequestBody Friend friend) {
 
-        return friendService.save(friend);
+        if ( friendService.findById( friend.getId()).isPresent()) {
+
+            return new ResponseEntity<Friend>(friendService.save(friend), HttpStatus.OK);
+
+        } else {
+
+            return new ResponseEntity<Friend>(friend, HttpStatus.BAD_REQUEST);
+
+        }
+
+
 
     }
 
